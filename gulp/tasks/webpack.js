@@ -6,6 +6,7 @@ import WebpackDevServer from 'webpack-dev-server';
 import path from 'path';
 import config from '../config.js';
 const plugins = loadPlugins();
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 gulp.task('webpack', ['jquery-uls'], (cb) => {
   const jsSource = `./${config.sourcePath}/${config.jsDirectory}`;
@@ -51,8 +52,7 @@ gulp.task('webpack', ['jquery-uls'], (cb) => {
     }));
 
     // Minify
-    wpPlugins.push(new webpack.optimize.UglifyJsPlugin({
-      compress: { warnings: false }
+    wpPlugins.push(new UglifyJsPlugin({
     }));
   }
 
