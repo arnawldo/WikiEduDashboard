@@ -6,15 +6,16 @@ describe 'language_switcher', type: :feature, js: true do
   context 'user logged out' do
     it 'should default to English' do
       visit root_path
-      expect(page).to have_css('.uls-trigger', text: 'en')
+      expect(page).to have_css('.language-picker', text: 'en')
     end
 
     it 'should switch to another language using URL param' do
       visit root_path
-      click_button('en')
-      expect(page).to have_text('Common languages')
-      expect(page).to have_text('français')
-      find("#uls-lcd-quicklist li[title='français'] > a").click
+      find('.language-picker').click
+      expect(page).to have_text('Help translate')
+      within('div.Select-menu') do
+        find('div.Select-option', text: 'Français').click
+      end
       expect(page.current_path).to eq root_path
       uri = URI.parse(current_url)
       expect("#{uri.path}?#{uri.query}").to eq(root_path(locale: 'fr'))
@@ -30,15 +31,19 @@ describe 'language_switcher', type: :feature, js: true do
 
     it 'should default to English' do
       visit root_path
-      expect(page).to have_css('.uls-trigger', text: 'en')
+      expect(page).to have_css('.language-picker', text: 'en')
     end
 
     it 'should switch to another language using user model' do
+      page.current_window.resize_to(3000, 1080) # Workaround for PhantomJS layout bug
+
       visit root_path
-      click_button('en')
-      expect(page).to have_text('Common languages')
-      expect(page).to have_text('français')
-      find("#uls-lcd-quicklist li[title='français'] > a").click
+      find('.language-picker').click
+
+      expect(page).to have_text('Help translate')
+      within('div.Select-menu') do
+        find('div.Select-option', text: 'Français').click
+      end
       expect(page.current_path).to eq root_path
       uri = URI.parse(current_url)
       expect("#{uri.path}?#{uri.query}").to eq("#{root_path}?")
